@@ -24,6 +24,10 @@ app.listen(port, () => {
     console.log(`App Listening at Port ${port}`)
 })
 
+app.use("/", (req,res) => {
+    res.json({message: "Hello World"})
+})
+
 // const authRoutes = require('./routes/authRoutes');
 // app.use('/auth', authRoutes);
 const vendorRoutes = require('./Routes/Vendor');
