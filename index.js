@@ -19,11 +19,6 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const port = process.env.PORT || 3001;
-app.listen(port, () => {
-    console.log(`App Listening at Port ${port}`)
-})
-
 
 // const authRoutes = require('./routes/authRoutes');
 // app.use('/auth', authRoutes);
@@ -49,6 +44,11 @@ const voucherRoutes = require('./Routes/Voucher');
 app.use('/voucher', voucherRoutes);
 const riderRoutes = require('./Routes/Rider');
 app.use('/rider', riderRoutes);
+
+const port = process.env.PORT || 3001;
+app.listen(port, () => {
+    console.log(`App Listening at Port ${port}`)
+})
 
 const DB = "mongodb+srv://khizer:khizer1120@db.5j8g0xd.mongodb.net/retryWrites=true&w=majority"
 
