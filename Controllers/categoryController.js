@@ -95,6 +95,7 @@ const addCategory = async (req, res) => {
 
   const getAllCategories = async (req, res) => {
     try {
+      console.log("sending request...");
       const categories = await Category.find();
       const adminCategories = categories.filter((category) => { return category.state === "public"} );
       res.status(200).json({
