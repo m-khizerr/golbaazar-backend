@@ -3,9 +3,10 @@ const Vendor = require('../Models/Vendor');
 const Product = require('../Models/Product');
 const Category = require('../Models/Category');
 const { default: mongoose } = require('mongoose');
+const cloudinary = require('cloudinary').v2;
+
 
 const addStore = async (req, res) => {
-    console.log("adding store");
     try {
         const { name, mainCategory, address, owner } = req.body;
         if (!owner) {
@@ -13,17 +14,21 @@ const addStore = async (req, res) => {
             return;
         }
         const vendor = await Vendor.findById(owner);
+        if (!vendor) {
+          res.status(404).json({ message: "Vendor not found" });
+          return;
+        }
+        const storeBannerResult = await cloudinary.uploader.upload(req.file.path);
         const store = new Store({
             storeName: name,
             mainCategory: mainCategory,
             address: address,
             owner: owner,
+            storeBanner: storeBannerResult.secure_url
         });
+
         const savedStore = await store.save();
-        if (!vendor) {
-            res.status(404).json({ message: "Vendor not found" });
-            return;
-        }
+        console.log("new store",savedStore);
         vendor.store = savedStore._id;
         vendor.mainCategory = mainCategory;
         const updatedVendor = await Vendor.findByIdAndUpdate(vendor._id, vendor);
@@ -36,7 +41,7 @@ const addStore = async (req, res) => {
 
 const getStore = async (req, res) => {
     try {
-        const ownerId = req.query.ownerId;
+        const ownerId = req.body.ownerId;
         const store = await Store.findOne({owner: ownerId});
         if (!store) {
             return res.status(404).json({ error: 'Store not found' });

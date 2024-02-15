@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middlewares/multerMiddleware');
+const {upload} = require('../middlewares/multerMiddleware');
 const {addStore, getStore, getAllStores, deleteProduct, deleteCategory} = require('../Controllers/storeController');
 
-router.post('/addstore', addStore);
+router.post('/addstore', upload.single('storeBanner'), addStore);
 // router.post('/registration', register);
 // router.get('/login', signIn);
 router.get('/allstores', getAllStores);

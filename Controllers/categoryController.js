@@ -1,20 +1,15 @@
 const mongoose = require('mongoose');
 const Category = require('../Models/Category');
 const User = require('../Models/Vendor');
+const Store = require('../Models/Store');
 const cloudinary = require('cloudinary').v2;
 
 const addCategory = async (req, res) => {
     try {
-      const { name, state, coverImage } = req.body;
-      console.log("about to upload");
+      const { name, state } = req.body;
       if (!name || !state) {
         return res.status(400).json({ error: 'All fields are required' });
       }
-      // const userId = req.user._id;
-      // const user = await User.findById({userId});
-
-      console.log(req.files);
-
       const result = await cloudinary.uploader.upload(req.file.path);
       const category = new Category({
         name: name,
@@ -24,24 +19,22 @@ const addCategory = async (req, res) => {
 
       if (state === 'public') {
         await category.save();
-        console.log("uploaded");
-
         return res.status(201).json({
             message: 'Category Created Successfully',
             createdCategory: category,
         });
       }
 
-      const phone = req.body.phone;
-      const user = await User.findOne({phone});
+      const owner = req.body.owner;
+      const store = await Store.findOne({owner: owner});
   
-      if (!user) {
+      if (!store) {
         return res.status(404).json({ error: 'User not found' });
       }
   
-      user.categories.push(category);
+      store.subCategories.push(category);
   
-      Promise.all([user.save(), category.save()])
+      Promise.all([store.save(), category.save()])
         .then(() => {
             res.status(201).json({
             message: 'Category Created Successfully',
