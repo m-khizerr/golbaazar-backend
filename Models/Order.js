@@ -13,7 +13,10 @@ const orderSchema = mongoose.Schema({
         type: String,
         require: true,
     },
-    products: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }], default: [] },
+    products: [{
+        product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+        quantity: { type: Number, default: 1 }
+      }],
     deliveryAddress: {
         type: String,
         require: true,

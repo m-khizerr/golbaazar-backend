@@ -1,36 +1,31 @@
 const mongoose = require('mongoose');
 const Product = require('../Models/Product');
-const User = require('../Models/Vendor');
+const Store = require('../Models/Store');
+const cloudinary = require('cloudinary').v2;
 
 const addProduct = async (req, res) => {
     try {
-      const { name, price, quantity, category, description} = req.body;
-
-      if (!name || !price || !quantity || !description) {
+      const { name, price, quantity, subCategory, owner} = req.body;
+      if (!name || !price || !quantity || !subCategory) {
         return res.status(400).json({ error: 'All fields are required' });
       }
   
+      const result = await cloudinary.uploader.upload(req.file.path);
       const product = new Product({
         name,
-        description,
         price,
         quantity,
-        category,
+        subCategory,
+        coverImage: result.secure_url
       });
-  
-      // const userId = req.user._id;
-      // const user = await User.findById({userId});
 
-      const phone = req.body.phone;
-      const user = await User.findOne({phone});
-  
-      if (!user) {
+      const store = await Store.findOne({owner: owner});
+      if (!store) {
         return res.status(404).json({ error: 'User not found' });
       }
   
-      user.products.push(product);
-  
-      Promise.all([user.save(), product.save()])
+      store.products.push(product);
+      Promise.all([store.save(), product.save()])
         .then(() => {
             res.status(201).json({
             message: 'Product Created Successfully',
@@ -46,8 +41,6 @@ const addProduct = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
-  
-
 
   const getAllProducts = async (req, res) => {
     try {
@@ -65,18 +58,20 @@ const addProduct = async (req, res) => {
 
   const getProducts = async (req, res) => {
     try {
-
-        // const userId = req.user._id;
-        // const user = await User.findOne({ phone });
-        // const products = user.products;
-
-        const { phone } = req.body;
-        const user = await User.findOne({ phone });
-        console.log(user);
-        const products = user.products;
+        const vendorId = req.params.vendorId;
+        console.log(vendorId);
+        const store = await Store.findOne({ owner: vendorId });
+        if (!store) {
+          return res.status(404).json({ error: 'Store not found' });
+        }
+        const allProducts = await Product.find();
+        const products = store.products;
+        const filteredProducts = allProducts.filter(product => {
+          return products.some(prdct => prdct._id.equals(product._id)); 
+        });
         res.status(200).json({
             message: "Products retrieved successfully",
-            products: products,
+            products: filteredProducts,
         });
     } catch (error) {
       console.error(error);
@@ -105,9 +100,8 @@ const addProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   const productId = req.params.productId;
-
   try {
-    const deletedProduct = await Product.findByIdAndRemove(productId);
+    const deletedProduct = await Product.findByIdAndDelete(productId);
     if (!deletedProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }

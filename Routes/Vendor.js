@@ -15,6 +15,4 @@ router.delete('/deleteuser/:id', deleteVendor);
 router.post('/blockuser/:id', blockUser);
 router.get('/getuser/:id', getVendor);
 
-
-
 module.exports = router;

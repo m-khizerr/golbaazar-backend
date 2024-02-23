@@ -1,23 +1,17 @@
 const mongoose = require('mongoose');
 const Post = require('../Models/Post');
-const User = require('../Models/Vendor');
+const Store = require('../Models/Store');
 const cloudinary = require('cloudinary').v2;
 
 const addPost = async (req, res) => {
     try {
-      const { description, type, coverImage, state } = req.body;
+      const { description, coverImage, state, endDate, discount } = req.body;
 
-      console.log(description);
-
-      if (!description || !type) {
-        return res.status(400).json({ error: 'All fields are required' });
-      }
-
-      const result = await cloudinary.uploader.upload(req.file.path);
-  
+      const result = await cloudinary.uploader.upload(req.file.path);  
       const post = new Post({
         description: description,
-        type: type,
+        endDate: endDate,
+        discount: discount,
         state: state,
         coverImage: result.secure_url,
       });
@@ -30,20 +24,17 @@ const addPost = async (req, res) => {
             post: post,
         });
       }
-  
-      // const userId = req.user._id;
-      // const user = await User.findById({userId});
 
-      const phone = req.body.phone;
-      const user = await User.findOne({phone});
+      const ownerId = req.body.owner;
+      const store = await Store.findOne({owner: ownerId});
   
-      if (!user) {
+      if (!store) {
         return res.status(404).json({ error: 'User not found' });
       }
   
-      user.posts.push(post);
+      store.posts.push(post);
   
-      Promise.all([user.save(), post.save()])
+      Promise.all([store.save(), post.save()])
         .then(() => {
             res.status(201).json({
             message: 'Post Created Successfully',
@@ -138,8 +129,8 @@ const addPost = async (req, res) => {
         // const user = await User.findOne({ phone });
         // const products = user.products;
 
-        const { phone } = req.body;
-        const user = await User.findOne({ phone });
+        const { owner } = req.body;
+        const user = await Store.findOne({ owner: owner });
         console.log(user);
         const posts = user.posts;
         res.status(200).json({

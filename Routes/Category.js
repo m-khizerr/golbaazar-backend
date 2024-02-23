@@ -9,6 +9,6 @@ router.post('/addcategory',upload.single('coverImage'), addCategory);
 router.get('/getallcategories', getAllCategories);
 router.post('/editcategory/:categoryId',upload.single('coverImage'), editCategory);
 router.delete('/deletecategory/:categoryId', deleteCategory);
-router.get('/getcategory', getCategory);
+router.get('/getcategories/:vendorId', getCategory);
 
 module.exports = router;

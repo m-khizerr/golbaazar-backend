@@ -1,9 +1,7 @@
-const mongoose = require('mongoose');
-const Voucher = require('../Models/Voucher');
+const Voucher = require('../Models/Voucher')
 const Store = require('../Models/Store');
 
 const addVoucher = async (req, res) => {
-    console.log("Adding offer")
     try {
       const {voucherName, code, percentage, state} = req.body;
       const voucher = new Voucher({
@@ -20,18 +18,19 @@ const addVoucher = async (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         }
         } else {
-            const sellerId = req.body.seller;
-            const sellerStore = await Store.findOne({ owner: sellerId });
-        
-            if (!sellerStore) {
+            const ownerId = req.body.owner;
+            console.log(ownerId);
+            const ownerStore = await Store.findOne({ owner: ownerId });
+
+            if (!ownerStore) {
                 return res.status(404).json({ error: 'Seller or Store not found' });
             }
         
             const savedVoucher = await voucher.save();
         
-            sellerStore.offers.push(savedVoucher);
+            ownerStore.vouchers.push(savedVoucher);
         
-            Promise.all([sellerStore.save()])
+            Promise.all([ownerStore.save()])
                 .then(() => {
                     res.status(201).json({
                         message: 'Voucher Created Successfully',
@@ -65,8 +64,9 @@ const addVoucher = async (req, res) => {
 
 const deleteVoucher = async (req, res) => {
   const voucherId = req.params.voucherId;
+  console.log(voucherId);
   try {
-    const deletedVoucher = await Voucher.findByIdAndRemove(voucherId);
+    const deletedVoucher = await Voucher.findByIdAndDelete(voucherId)
     if (!deletedVoucher) {
       return res.status(404).json({ message: 'voucher not found' });
     }

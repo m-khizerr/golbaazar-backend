@@ -5,14 +5,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    description: {
-        type: String,
-    },
     price: {
         type: Number,
         require: true,
     },
-    category: {
+    subCategory: {
         type: String, 
         require: true,
     },
@@ -20,7 +17,10 @@ const productSchema = new mongoose.Schema({
         type: Number,
         require: true,
     },
-
+    coverImage: {
+        type: String,
+        require: true,
+    }
 })
 
 const Product = mongoose.model('Products', productSchema);

@@ -30,6 +30,10 @@ const storeSchema = new mongoose.Schema({
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
         default: []
     },
+    posts: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+        default: []
+    },
     status: {
         type: String,
         default: "active",

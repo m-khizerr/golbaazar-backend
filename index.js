@@ -19,11 +19,6 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-
-app.use('/', (req,res) => {
-    res.json({message: 'Hello World'})
-})
-
 // const authRoutes = require('./routes/authRoutes');
 // app.use('/auth', authRoutes);
 const vendorRoutes = require('./Routes/Vendor');

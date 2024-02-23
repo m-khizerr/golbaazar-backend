@@ -107,20 +107,19 @@ const addCategory = async (req, res) => {
     }
   };
 
+
   const getCategory = async (req, res) => {
     try {
-
-        // const userId = req.user._id;
-        // const user = await User.findOne({ phone });
-        // const products = user.products;
-
-        const { phone } = req.body;
-        const user = await User.findOne({ phone });
-        console.log(user);
-        const categories = user.categories;
+        const vendorId = req.params.vendorId;
+        const store = await Store.findOne({ owner: vendorId });
+        const allCategories = await Category.find();
+        const categories = store.subCategories;
+        const filteredCategories = allCategories.filter(category => {
+          return categories.some(cat => cat._id.equals(category._id)); 
+        });
         res.status(200).json({
             message: "Categories retrieved successfully",
-            categories: categories,
+            categories: filteredCategories,
         });
     } catch (error) {
       console.error(error);

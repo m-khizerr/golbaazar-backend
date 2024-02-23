@@ -5,10 +5,6 @@ const postSchema = mongoose.Schema({
         type: String,
         require: true,
     },
-    type: {
-        type: String,
-        require: true,
-    },
     coverImage: {
         type: String
     },
@@ -19,6 +15,13 @@ const postSchema = mongoose.Schema({
     date: {
         type: Date,
         default: Date.now(),
+    },
+    discount: {
+        type: Number,
+        require: true
+    },
+    endDate: {
+        type: Date
     }
 });
 

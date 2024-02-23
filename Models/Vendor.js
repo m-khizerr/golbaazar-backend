@@ -25,10 +25,6 @@ const vendorSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
-    posts: {
-        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-        default: []
-    },
     status: {
         type: String,
         default: "active",
