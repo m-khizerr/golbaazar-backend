@@ -27,6 +27,8 @@ app.get('/home', (req, res) => {
 // app.use('/auth', authRoutes);
 const vendorRoutes = require('./Routes/Vendor');
 app.use('/vendor', vendorRoutes);
+const adminRoutes = require('./Routes/Admin');
+app.use('/admin', adminRoutes);
 const customerRoutes = require('./Routes/Customer');
 app.use('/customer', customerRoutes);
 const authRoutes = require('./middlewares/authMiddleware');
@@ -53,13 +55,17 @@ app.listen(port, () => {
     console.log(`App Listening at Port ${port}`)
 })
 
-const DB = "mongodb+srv://khizer:khizer1120@db.5j8g0xd.mongodb.net/retryWrites=true&w=majority"
+const DB = "mongodb+srv://Khizer:khizer1120@geez-database.rlvazjq.mongodb.net/retryWrites=true&w=majority"
 
 mongoose.connect(DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(() => console.log("Database connected"))
-    .catch((error) => console.log(error.message));
+}).then(() => {
+    console.log("Database connected successfully!");
+}).catch((error) => {
+    console.error("Error connecting to the database:", error.message);
+});
+
 
 
 
