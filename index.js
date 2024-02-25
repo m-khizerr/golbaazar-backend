@@ -19,6 +19,10 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+app.get('/home', (req, res) => {
+    res.status(200).json('Welcome, your app is working well');
+});
+
 // const authRoutes = require('./routes/authRoutes');
 // app.use('/auth', authRoutes);
 const vendorRoutes = require('./Routes/Vendor');
